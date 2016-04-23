@@ -1,9 +1,8 @@
 # This script processes the raster data and produces polygon
-# summaries and saves them as csv files. For a large area such this can be a slow process.
+# summaries and saves them as csv files. For a large area this can be a slow process.
 
 # Websites the data came from:
 # Land Cover: http://nassgeodata.gmu.edu/CropScape/      ***get an appropriate UTM version, Don't use the degrees minutes projection, 
-
 
 # SET VARIABLES
 ##########################
@@ -17,6 +16,9 @@ countyNameFieldVar <- "UNITNO"
 
 # Set the output file location.
 ouputFile <- "M:/GFP/Wildlife/BigGameProgram/Terrestrial/Land Cover Changes/Summary Data/df Deer Units.csv"
+
+# Set the location of the raster value key
+valKeyFile <_ "M:/GFP/Wildlife/BigGameProgram/Terrestrial/Land Cover Changes/Summary Data/valueKey.csv"
 ##########################
 
 require(rgdal)
@@ -73,11 +75,10 @@ countyKey <- as.data.frame(cbind(as.numeric(countiesSHP$countyNum), as.vector(co
 colnames(countyKey) <- c("CountyCode","County")
 df <- merge(df,countyKey)
 # This loads a table telling us the character names for the numeric crop numbers.
-valuesKey <- read.csv("M:/GFP/Wildlife/BigGameProgram/Terrestrial/Land Cover Changes/Summary Data/valueKey.csv", stringsAsFactors=F)
+valuesKey <- read.csv(valKeyFile, stringsAsFactors=F)
 df <- merge(df,valuesKey)
 
 # 5,8 is the position of the year in the raster file names.
 df$Year <- substr(df$Raster,5,8) 
 
 write.csv(df,ouputFile , row.names=F)
-
